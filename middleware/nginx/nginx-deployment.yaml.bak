@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nginx-deployment
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-deployment
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx-deployment
+    spec:
+      containers:
+      - image: goharbor/nginx-photon:v2.9.1
+        name: nginx-zhang
+        securityContext:
+          #  privileged: true
+          runAsUser: 0    
+        ports:  
+        - containerPort: 80
+        volumeMount:
+        - name: zhang
+          mountPath: /var/lib 
+      nodeSelector: 
+        kubernetes.io/hostname: k8s-node1
+      volumes:
+      - name: zhang
+        emptyDir: {}     

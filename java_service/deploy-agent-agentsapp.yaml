@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-agentapp
+  namespace: k8s-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agent-agentapp
+  template:
+    metadata:
+      labels:
+        app: agent-agentapp
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node1
+      containers:
+      - name: agent-agentapp
+        image:  huizhizhinengoso/agent-agentsapp:v2.1.0.20250612-Release
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: NACOS_HOST
+          value: "nacos-svc-headless"
+        - name: NACOS_PORT
+          value: "8848"
+        - name: NACOS_NAMESPACE
+          value: "7dd5b55b-0c7e-42fb-9bb0-158a02034494"
+        - name: ARGS
+        ports:
+        - containerPort: 6000          

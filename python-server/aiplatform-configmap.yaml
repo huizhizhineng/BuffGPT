@@ -1,0 +1,120 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiplatform-config
+  namespace: k8s-pg
+data:
+  config.ini: |
+    [base_config]
+    host = 0.0.0.0
+    port = 9991
+    workers = 1
+    
+    [redis_config]
+    password = hyD4fwMZtXreiYBt
+    host = 172.16.1.13
+    port = 17507
+    
+    [mq_config]
+    host = 172.16.1.13
+    port = 5527
+    user = rabbitmq
+    password = 3R7P6NYM5GtDRbLN
+    max_priority = 10
+    
+    [postgres_config]
+    host = 172.16.1.13
+    port = 17506
+    user = postgres
+    password = iErGRNf2fRKSwhnK
+    database = platform
+    max_connections = 100
+    stale_timeout = 300
+    timeout = 30
+    
+    [my_milvus_config]
+    host = 192.168.3.203
+    port = 31102
+    user = root
+    password = Milvus
+    alias = default
+    protocol = http
+    
+    [milvus_config]
+    milvus_uri = http://192.168.3.203:31102
+    milvus_user = root
+    milvus_password = Milvus
+    
+    
+    [pipeline_config]
+    host = 0.0.0.0
+    port = 8900
+    workers = 1
+    
+    [agents_config]
+    host = 0.0.0.0
+    port = 8800
+    workers = 4
+    
+    [chat_config]
+    debug = true
+    position_tool_pins=
+    position_tool_includes=
+    position_tool_excludes=
+    
+    position_provider_pins=
+    position_provider_includes=
+    position_provider_excludes=
+    
+    etl_type=Unstructured
+    unstructured_api_url=
+    unstructured_api_key=
+    scarf_no_analytics=true
+    prompt_provider=tongyi
+    prompt_name=qwen-turbo-latest
+    prompt_auth=c4a7b439-26fd-4b51-ad25-ba9877358739
+    
+    [minio_config]
+    endpoint = 192.168.3.203:31101
+    access_key = minioadmin
+    secret_key = minioadmin
+    
+    [file_sys_config]
+    base_url = https://file.dev.agentsyun.com/
+    
+    [code_exec_base_config]
+    base_url = http://127.0.0.1:15685/api/v1/submit
+    
+    [web_search_config]
+    default_tool_name = bocha
+    searxng_url = http://172.16.1.13:8081
+    bocha_url = https://api.bochaai.com/v1/web-search
+    bocha_api_key = sk-00514e1469c74b1eb10ce2182ec693ec
+    
+    [xinference_config]
+    base_url = http://120.26.167.137:9997
+    
+    [workflow_config]
+    auto_finish_minute = 10
+    
+    [mq_name_config]
+    knowledge_mq_name = knowledge
+    workflow_mq_name = workflowQueue
+    workflow_name = workflow
+    workflow_application_mq_name = workflowApplicationQueue
+    workflow_application_name = workflowApplication
+    agents_mq_name = agentQueue
+    workflow_chat_queue = workflowChatQueue
+    workflow_application_mq_next_node_name = workflowApplicationNextNodeQueue
+    
+    [rules_threshold_config]
+    threshold = 0.7
+    
+    [db_manager_config]
+    db_server_url = http://127.0.0.1:8001/api/v1
+    
+    [result2excel_config]
+    result2excel_server_url = http://127.0.0.1:6070/excel/queryResultToExcel
+    
+    [golang_mcp_config]
+    golang_mcp_host = http://172.16.11.91:8888

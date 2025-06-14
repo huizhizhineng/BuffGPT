@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: k8s-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node1
+      containers:
+      - name: gateway
+        image: huizhizhinengoso/agent-gateway:v2.1.0.20250612-Release
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: NACOS_HOST
+          value: "nacos-svc-headless"
+        - name: NACOS_PORT
+          value: "8848"
+        - name: NACOS_NAMESPACE
+          value: "7dd5b55b-0c7e-42fb-9bb0-158a02034494"
+        #- name: service_host
+        #  valueFrom:
+        #    fieldRef:
+        #      apiVersion: v1
+        #      fieldPath: status.podIP              
+        #- name: ARGS
+        #  value: " -DNACOS_HOST=$nacos_host -DNACOS_PORT=$nacos_port -DNACOS_NAMESPACE=$nacos_namespace  -Dspring.cloud.nacos.discovery.ip=$service_host -Dspring.cloud.nacos.discovery.port=7349 -Dhuizhi.sequnce.snowflake.datacenterId=1 -Dhuizhi.sequnce.snowflake.workerId=1"
+        #command: ["sh", "-c"]
+        #args: ["java -server -Xmx1024m -Xss256k -DNACOS_HOST=$nacos_host -DNACOS_PORT=$nacos_port -DNACOS_NAMESPACE=$nacos_namespace  -Dspring.cloud.nacos.discovery.ip=$service_host -Dspring.cloud.nacos.discovery.port=7349 -Dhuizhi.sequnce.snowflake.datacenterId=1 -Dhuizhi.sequnce.snowflake.workerId=1 -jar app.jar com.huizhi.agent.gateway.AgentGatewayApplication"]        
+        ports:
+        - containerPort: 7349
+    #   volumeMounts:
+    #   - name: config
+    #     mountPath: /home/gateway/conf/application.properties
+    #     subPath: application.properties
+    #   - name: data
+    #     mountPath: /home/gateway/data
+    # volumes:
+    # - name: config
+    #   configMap:
+    #     name: gateway-config
+    # - name: data
+    #   hostPath:
+    #     path: /opt/nfs/data-gateway

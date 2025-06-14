@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-replica-headless
+  labels:
+    app: mysql-replica
+spec:
+  ports:
+    - name: tcp-3306
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: mysql-replica
+  clusterIP: None
+  type: ClusterIP

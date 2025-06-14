@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-db-access
+  namespace: k8s-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-db-access
+  template:
+    metadata:
+      labels:
+        app: mcp-db-access
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node2
+      containers:
+      - name: mcp-db-access
+        image:  huizhizhinengoso/mcp-db-access-server:v2.1.0.20250612-Release
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: EtcdHosts
+          value: "etcd-svc:2379"
+        - name: RedisHost
+          value: "redis-svc:6379"
+        - name: RedisType
+          value: "node"
+        - name: RedisPass 
+          value: "password"
+        - name: ListenOn
+          value: "0.0.0.0:8080"
+        - name: DataSource
+          value: "postgres://admin:hzhy1234@postgres-svc.k8s-pg:5432/mcp?sslmode=disable"        
+      #  ports:
+       # - containerPort: 8025

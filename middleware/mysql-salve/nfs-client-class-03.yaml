@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata: 
+  name: course-nfs-storage
+provisioner: fuseim.pri/ifs    
+reclaimPolicy: Delete
+  #volumeBindingMode: WaitForFirstConsumer  
+volumeBindingMode: Immediate  

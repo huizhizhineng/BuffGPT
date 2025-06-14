@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-im-01
+  namespace: k8s-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agent-im
+  template:
+    metadata:
+      labels:
+        app: agent-im
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node2
+      containers:
+      - name: agent-im1
+        image: huizhizhinengoso/agent-agentsim:v2.1.0.20250612-Release
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: NACOS_HOST
+          value: "nacos-svc-headless"
+        - name: NACOS_PORT
+          value: "8848"
+        - name: NACOS_NAMESPACE
+          value: "7dd5b55b-0c7e-42fb-9bb0-158a02034494"
+        - name: ws.netty.ip
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: ws.netty.port
+          value: "8009"        
+        ports:
+        - containerPort: 3000
+---        
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-im-02
+  namespace: k8s-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: agent-im
+  template:
+    metadata:
+      labels:
+        app: agent-im
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node2
+      containers:
+      - name: agent-im1
+        image: huizhizhinengoso/agent-agentsim:v2.1.0.20250612-Release
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: NACOS_HOST
+          value: "nacos-svc-headless"
+        - name: NACOS_PORT
+          value: "8848"
+        - name: NACOS_NAMESPACE
+          value: "7dd5b55b-0c7e-42fb-9bb0-158a02034494"
+        - name: ws.netty.ip
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: ws.netty.port
+          value: "8010"        
+        ports:
+        - containerPort: 3000

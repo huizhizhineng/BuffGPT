@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcprouter
+  namespace: k8s-pg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcprouter
+  template:
+    metadata:
+      labels:
+        app: mcprouter
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node2
+      containers:
+      - name: mcprouter
+        image:  huizhizhinengoso/mcp-router-server:v2.1.0.20250612-Release
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: EtcdHosts
+          value: "etcd-svc:2379"
+        - name: RedisHost
+          value: "redis-svc:6379"
+        - name: RedisType
+          value: "node"
+        - name: RedisPass 
+          value: "password"
+        - name: Port
+          value: "8025"

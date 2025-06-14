@@ -1,0 +1,58 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: mysql-source
+  labels:
+    app: mysql-source
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-source
+  template:
+    metadata:
+      labels:
+        app: mysql-source
+    spec:
+      volumes:
+      - name: host-time
+        hostPath:
+          path: /etc/localtime
+          type: ''  
+      - name: config
+        configMap:
+          name: mysql-source-cnf
+          defaultMode: 420
+      containers:
+      - name: mysql-source
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: hzhy1234
+        resources:
+          limits:
+            cpu: '2'
+            memory: 4Gi
+          requests:
+            cpu: 100m
+            memory: 100Mi    
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+        - name: config
+          readOnly: true
+          mountPath: /etc/mysql/conf.d/
+        imagePullPolicy: IfNotPresent
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 0.5Gi
+        storageClassName: course-nfs-storage
+        volumeMode: Filesystem
+  serviceName: mysql-source-headless

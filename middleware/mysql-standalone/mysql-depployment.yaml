@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+    name: mysql-namespace
+      
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mysql-deployment
+  name: mysql-deployment
+  namespace: mysql-namespace  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-deployment
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: mysql-deployment
+    spec:
+      #hostNetwork: true
+      containers:
+      - image: 192.168.17.31:8010/mysql:latest
+        # - image: mysql:8.0
+        name: mysql-zhang
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: MYSQL_USER
+          value: hzhy
+        - name: MYSQL_PASSWORD
+          value: Hzhy1234    
+        - name: MYSQL_DATABASE
+          value: test
+        - name: MYSQL_ROOT_PASSWORD
+          value: Hzhy1234    
+        securityContext:
+          #  privileged: true
+          runAsUser: 0    
+        ports:  
+        - containerPort: 3306
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql 
+      nodeSelector: 
+        kubernetes.io/hostname: k8s-node1
+      volumes:
+      - name: mysql-data
+        hostPath:     
+          path: /opt/data
+          type: DirectoryOrCreate  

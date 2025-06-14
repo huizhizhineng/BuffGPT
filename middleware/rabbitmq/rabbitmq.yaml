@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels: 
+    app: rabbitmq
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: rabbitmq
+  ports:
+  - name: rabbitmq
+    port: 5762
+    targetPort: 5672
+  - name: rabbitmq-web
+    port: 15762
+    targetPort: 15672
+  - name: rabbitmq-stomp
+    port: 61613
+    targetPort: 61613
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-external-svc
+spec:
+  type: NodePort
+  selector:
+    app: rabbitmq
+  ports:
+  - name: rabbitmq
+    port: 15762
+    targetPort: 15672
+    nodePort: 31111    
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+spec:
+  serviceName: rabbitmq-external-svc
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq  
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node1
+      containers:
+      - name: rabbitmq
+        image: harbor.guiji.ai:5443/library/rabbitmq:3.7-management
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: rabbitmq
+          containerPort: 5672
+          protocol: "TCP"
+        - name: rabbitmq-web
+          containerPort: 15672
+          protocol: "TCP"
+        - name: rabbitmq-stomp
+          containerPort: 61613
+          protocol: "TCP"
+        env:
+        - name: RABBITMQ_DEFAULT_USER  
+          value: "guest"  # 默认用户名  
+        - name: RABBITMQ_DEFAULT_PASS 
+          value: "hzhy1234"  # 默认密码
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+          subPath: data/rabbitmq
+        # 定义钩子函数，在RabbitMQ容器启动后，自动启用RabbitMQ的STOMP插件
+        lifecycle:
+          postStart:
+            exec:
+              command: ["rabbitmq-plugins", "enable", "rabbitmq_stomp"]
+      restartPolicy: Always
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-data
+    spec:
+      accessModes: [ "ReadWriteMany" ]
+      storageClassName: "course-nfs-storage"
+      resources:
+        requests:
+          storage: 1Gi
