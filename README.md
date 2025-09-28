@@ -131,4 +131,3 @@ BuffGPT基于MCP协议的企业级AI应用架构，充分发挥云原生API网�
 
 ## 👥 加入社区
 - Discord [点击加入Discord](https://discord.gg/paPHkqFe)
-- 微信社群 [点击加入BuffGPT社区](resources/wx.png)
